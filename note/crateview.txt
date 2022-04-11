@@ -1,0 +1,121 @@
+alter view tb_checkimport as select storages.srId,imports.impId,products.pdId,products.pdname,products.pdfullname,suppliers.supfullname,brands.bname,categories.ctname,sizes.sname,import_lists.order_qty,import_lists.reciev_qty,import_lists.imlprice,
+(import_lists.order_qty*import_lists.imlprice) as priceBefore,
+(import_lists.reciev_qty*import_lists.imlprice) as priceAfter,
+((import_lists.order_qty*import_lists.imlprice)-(import_lists.reciev_qty*import_lists.imlprice)) as AmountTotal,
+imports.created_at from import_lists 
+inner join storages on import_lists.storage_Id = storages.srId
+inner join imports on import_lists.import_Id = imports.impId 
+inner join sizes on storages.size_Id = sizes.sId 
+inner join suppliers on imports.supplier_Id = suppliers.supId 
+inner join products on storages.product_Id = products.pdId 
+inner join brands on products.brand_Id = brands.bId 
+inner join categories on products.supplier_Id = categories.ctId 
+
+
+alter view tb_searchbill as SELECT `storages`.`srId` AS `storage_Id`, `imports`.`impId` AS `import_Id`, `products`.`pdId` AS `pdId`, `products`.`pdname` AS `pdname`, `products`.`pdfullname` AS `pdfullname`, `brands`.`bname` AS `bname`, `categories`.`ctname` AS `ctname`, `sizes`.`sname` AS `sname`, `import_lists`.`reciev_qty` AS `stQty`, `import_lists`.`imlprice` AS `stprice`, `import_lists`.`reciev_qty`* `import_lists`.`imlprice` AS `amount`, `imports`.`impstate` AS `impstate` FROM ((((((`import_lists` join `imports` on(`import_lists`.`import_Id` = `imports`.`impId`)) join `storages` on(`import_lists`.`storage_Id` = `storages`.`srId`)) left join `products` on(`storages`.`product_Id` = `products`.`pdId`)) join `brands` on(`products`.`brand_Id` = `brands`.`bId`)) join `categories` on(`products`.`categories_Id` = `categories`.`ctId`)) join `sizes` on(`storages`.`size_Id` = `sizes`.`sId`)) ;
+
+
+create view tb_product
+ create view tb_product as as select storages.srId,products.pdId,sizes.sId,products.pdname,sizes.sname,sizes.sdetail,products.pdrate,products.pdcost,products.pdprice,storages.srqty,products.pdprogression from storages inner join products on storages.product_Id = products.pdId inner join sizes on storages.size_Id = sizes.sId
+
+crate view products
+create VIEW tb_products as select products.pdId,products.pdphotos_main,products.pdname,products.pdfullname,brands.bname,categories.ctname,colours.cname,suppliers.supfullname,products.pdprogression,products.created_at,products.updated_at from products inner JOIN brands on products.brand_Id = brands.bId 
+inner join categories on products.categories_Id = categories.ctId 
+inner join colours on products.colour_Id = colours.cId 
+inner join suppliers on products.supplier_Id = suppliers.supId 
+
+create view tb_storage as  select storages.srId,products.pdId,sizes.sId,products.pdname,sizes.sname,sizes.sdetail,products.pdrate,products.pdcost,products.pdprice,storages.srqty,products.pdprogression,storages.srstate
+ from storages 
+ inner join products on storages.product_Id = products.pdId 
+ inner join sizes on storages.size_Id = sizes.sId
+
+alter view tb_import_list as select storages.srId,imports.impId,products.pdId,products.pdname,products.pdfullname,suppliers.supfullname,brands.bname,categories.ctname,colours.cname,sizes.sname,import_lists.order_qty,import_lists.imlprice,(import_lists.order_qty*import_lists.imlprice) as Amount,imports.impstate,imports.created_at from import_lists
+inner join storages on import_lists.storage_Id = storages.srId
+inner join imports on import_lists.import_Id = imports.impId
+inner join products on storages.product_Id = products.pdId
+inner join suppliers on products.supplier_Id = suppliers.supId
+inner join brands on products.brand_Id = brands.bId
+inner join categories on products.categories_Id = categories.ctId
+inner join sizes on storages.size_Id = sizes.sId    
+inner join colours on products.colour_Id = colours.cId
+
+
+font end
+alter view tb_fontproduct as select products.pdId,products.pdphotos_main,products.pdname,products.pdfullname,categories.ctname,colours.cname,products.pdprice,products.pdprogression from products inner join categories on products.categories_Id = categories.ctId inner join colours on products.colour_Id = colours.cId
+
+create view tb_detaillProduct as select products.pdId,products.pdphotos_main,products.pdphotos_sub,products.pdname,products.pdfullname,categories.ctname,colours.cname,brands.bname,products.pdprice,products.pdprogression from products inner join categories on products.categories_Id = categories.ctId inner join brands on products.brand_Id = brands.bId inner join colours on products.colour_Id = colours.cId
+
+alter view tb_viewsize as select storages.srId,products.pdId,sizes.sId,products.pdphotos_main,products.pdname,sizes.sname,sizes.sdetail,storages.srqty, storages.srqty as QTY ,products.pdprice,sizes.state from storages 
+inner join sizes on storages.size_Id = sizes.sId 
+inner join products on storages.product_Id = products.pdId
+
+alter view tb_payment as select invoinces.invId,invoinces.customer_Id,payments.pmImage,payments.pmNumbersix,invoinces.invQty,invoinces.invPrice,payments.pmState,invoinces.created_at from payments inner join invoinces on payments.invoince_Id = invoinces.invId inner join customers on invoinces.customer_Id = customers.cusId
+
+create view tb_ordered as select invoinces.invId,products.pdId,products.pdname,products.pdfullname,storages.srId,sizes.sname,sell_details.sdQty,sell_details.sdPrice,(sell_details.sdQty*sell_details.sdPrice) as total from sell_details inner join invoinces on sell_details.invoince_Id = invoinces.invId inner join products on sell_details.product_Id = products.pdId inner join storages on sell_details.storage_Id = storages.srId inner join sizes on storages.size_Id = sizes.sId
+
+alter view tb_sellbest as select products.pdId,products.pdphotos_main,products.pdname,storages.srId,sizes.sname,sell_details.sdQty,sell_details.sdPrice from sell_details
+inner join products on sell_details.product_Id = products.pdId
+inner join storages on sell_details.storage_Id = storages.srId
+inner join sizes on storages.size_Id = sizes.sId
+
+alter view tb_sellbest as select products.pdId,products.pdphotos_main,products.pdname,categories.ctname,colours.cname,storages.srId,sizes.sname,sell_details.sdQty,sell_details.sdPrice from sell_details inner join products on sell_details.product_Id = products.pdId inner join storages on sell_details.storage_Id = storages.srId inner join sizes on storages.size_Id = sizes.sId inner join categories on products.categories_Id = categories.ctId INNER join colours on products.colour_Id = colours.cId
+
+alter view tb_orderpdf as select invoinces.invId,customers.cus_gender,customers.cus_fullname,customers.cus_phone,customers.cus_provint,customers.cus_distric,customers.cus_home,customers.cus_description,products.pdId,products.pdname, products.pdfullname,storages.srId,sizes.sname,sell_details.sdQty,sell_details.sdPrice,(sell_details.sdQty*sell_details.sdPrice) as total,invoinces.created_at from sell_details inner join invoinces on sell_details.invoince_Id = invoinces.invId inner join products on sell_details.product_Id = products.pdId inner join customers on invoinces.customer_Id = customers.cusId inner join storages on sell_details.storage_Id = storages.srId inner join sizes on storages.size_Id = sizes.sId
+
+create view tb_checkpayment as select invoinces.invId,customers.cus_gender,customers.cus_fullname,customers.cus_phone,customers.cus_provint,
+customers.cus_distric,customers.cus_home,customers.cus_description,payments.pmNumbersix,payments.pmPrice,
+invoinces.invQty,invoinces.invPrice,payments.pmState,payments.created_at  from payments
+inner join invoinces on payments.invoince_Id = invoinces.invId
+inner join customers on invoinces.customer_Id = customers.cusId
+
+alter view tb_viewimports as  select import_lists.imlId,   imports.impId,products.pdId,products.pdname,products.pdfullname,suppliers.supfullname,brands.bname,colours.cname,categories.ctname,storages.srId,sizes.sname,import_lists.order_qty,import_lists.reciev_qty,import_lists.imlprice
+,(import_lists.reciev_qty*import_lists.imlprice)as total,imports.impstate,imports.created_at from import_lists
+inner join imports on import_lists.import_Id = imports.impId
+inner join storages on import_lists.storage_Id = storages.srId
+inner join sizes on storages.size_Id = sizes.sId
+inner join products on storages.product_Id = products.pdId
+inner join suppliers on products.supplier_Id = suppliers.supId
+inner join brands on products.brand_Id = brands.bId
+inner join colours on products.colour_Id = colours.cId
+inner join categories on products.categories_Id = categories.ctId
+
+create view tb_viewsale as select sell_details.sdId,invoinces.invId,products.pdId,products.pdname,products.pdfullname,suppliers.supfullname,brands.bname,colours.cname,categories.ctname,storages.srId,sizes.sname,sell_details.sdQty,sell_details.sdPrice
+,(sell_details.sdQty*sell_details.sdPrice)as total,invoinces.invState,invoinces.created_at from sell_details
+inner join invoinces on sell_details.invoince_Id = invoinces.invId
+inner join storages on sell_details.storage_Id = storages.srId
+inner join sizes on storages.size_Id = sizes.sId
+inner join products on sell_details.product_Id = products.pdId
+inner join suppliers on products.supplier_Id = suppliers.supId
+inner join brands on products.brand_Id = brands.bId
+inner join colours on products.colour_Id = colours.cId
+inner join categories on products.categories_Id = categories.ctId
+
+ alter view tb_reportsale as select sell_details.sdId,invoinces.invId,products.pdId,products.pdname,brands.bname,categories.ctname,storages.srId,sizes.sname,sell_details.sdQty,sell_details.sdPrice,invoinces.created_at from sell_details
+inner join invoinces on sell_details.invoince_Id = invoinces.invId
+inner join storages on sell_details.storage_Id = storages.srId
+inner join sizes on storages.size_Id = sizes.sId
+inner join products on sell_details.product_Id = products.pdId
+inner join brands on products.brand_Id = brands.bId
+inner join categories on products.categories_Id = categories.ctId
+
+day = SELECT sdId,created_at FROM tb_reportsale where day(created_at) = day('2021-06-08')
+month = SELECT sdId,created_at FROM tb_reportsale where month(created_at) = month('2021-06-08')
+
+create view tb_reportproduct as  select products.pdId,products.pdname,products.pdfullname,brands.bname,suppliers.supfullname,categories.ctname,colours.cname,products.pdcost,products.pdrate,products.pdprice,storages.srqty,products.created_at 
+from storages
+inner join products on storages.product_Id = products.pdId
+inner join brands on products.brand_Id = brands.bId
+inner join suppliers on products.supplier_Id = suppliers.supId
+inner join categories on products.categories_Id = categories.ctId
+inner join colours on products.colour_Id = colours.cId
+
+
+
+alter view tb_reportimport as select imports.impId,products.pdId,storages.srId,products.pdname,suppliers.supfullname,import_lists.reciev_qty,import_lists.imlprice,imports.created_at from import_lists 
+inner join imports on import_lists.import_Id = imports.impId 
+inner join suppliers on imports.supplier_Id = suppliers.supId 
+inner join storages on import_lists.storage_Id = storages.srId 
+inner join products on storages.product_Id = products.pdId
+
+
+create view tb_reportDetialImport as select import_lists.imlId,imports.impId,products.pdId,storages.srId,admins.name,products.pdname,suppliers.supfullname,brands.bname,categories.ctname,sizes.sname,import_lists.reciev_qty,import_lists.imlprice,imports.created_at from import_lists inner join imports on import_lists.import_Id = imports.impId inner join admins on imports.admin_Id = admins.aId inner join suppliers on imports.supplier_Id = suppliers.supId inner join storages on import_lists.storage_Id = storages.srId inner join sizes on storages.size_Id = sizes.sId inner join products on storages.product_Id = products.pdId inner join brands on products.brand_Id = brands.bId inner join categories on products.categories_Id = categories.ctId
